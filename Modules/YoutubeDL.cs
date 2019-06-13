@@ -20,7 +20,7 @@ namespace DiscordYoutubeDL
 
         [Command("download", RunMode = RunMode.Async)]
         [Summary("Downloads a YT video.")]
-        [Alias("dl")]
+        [Alias("dl", "grab", "get", "down")]
         [RequireBotPermission(
             GuildPermission.AttachFiles &
             GuildPermission.SendMessages
@@ -28,8 +28,8 @@ namespace DiscordYoutubeDL
         public async Task ytDownloadVid(string videoURL, string filetype = "mp3")
         {
             var embed = new EmbedBuilder()
-            .WithThumbnailUrl("https://cdn.discordapp.com/attachments/110373943822540800/235649976192073728/4AyCE.png")
-            .WithTitle("**Grabbing video, please wait...**")
+            .WithThumbnailUrl(config["icons:loading_url"])
+            .WithTitle(config["strings:start_get_video"])
             .WithColor(Color.Blue);
 
             var loadingMessage = await Context.Channel.SendMessageAsync(embed: embed.Build());
@@ -45,9 +45,9 @@ namespace DiscordYoutubeDL
             if (ytMetadata.Duration > new TimeSpan(1, 0, 0))
             {
                 embed.WithColor(Color.Red)
-                .WithThumbnailUrl("https://cdn.discordapp.com/attachments/588535514575929344/588566397819551744/274c.png")
-                .WithTitle("**Maximum video duration exceeded**")
-                .WithDescription("For performance reasons, the bot will not process videos longer than an hour.");
+                .WithThumbnailUrl(config["icons:error_url"])
+                .WithTitle(config["strings:max_duration_exceeded_title"])
+                .WithDescription(config["strings:max_duration_exceeded_desc"]);
                 await loadingMessage.ModifyAsync(msg => msg.Embed = embed.Build());
                 return;
             }
@@ -57,21 +57,21 @@ namespace DiscordYoutubeDL
 
             var ytEmbed = new EmbedBuilder
                 {
-                    Title = Format.Sanitize(ytMetadata.Title),
-                    Author = new EmbedAuthorBuilder().WithName(Format.Sanitize(ytMetadata.Author)),
+                    Title = String.Format(config["strings:video_embed_title"], Format.Sanitize(ytMetadata.Title)),
+                    Author = new EmbedAuthorBuilder
+                    {
+                        Name = String.Format(config["strings:video_embed_author"], Format.Sanitize(ytMetadata.Author)),
+                        IconUrl = config["strings:video_embed_author_thumb_url"]
+                    },
                     ThumbnailUrl = ytMetadata.Thumbnails.HighResUrl,
+                    Description = String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)).Length <= 2048 ? 
+                                  String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)) :
+                                  $"{String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)).Substring(0, 2045)}...",
                     Footer = new EmbedFooterBuilder().WithText(
-                        $"Duration: {ytMetadata.Duration.ToString()} | Views: {ytMetadata.Statistics.ViewCount}"
+                        String.Format(config["strings:video_embed_footer"], ytMetadata.Duration.ToString(), ytMetadata.Statistics.ViewCount)
                         )
                 }
                 .WithFields(
-                    new EmbedFieldBuilder
-                    {
-                        Name = "Description",
-                        Value = Format.Sanitize(ytMetadata.Description).Length <= 2048 ? 
-                        Format.Sanitize(ytMetadata.Description) : $"{Format.Sanitize(ytMetadata.Description).Substring(0, 2045)}...",
-                        IsInline = false
-                    },
                     new EmbedFieldBuilder()
                     .WithName("👍")
                     .WithValue(ytMetadata.Statistics.LikeCount)
@@ -98,18 +98,13 @@ namespace DiscordYoutubeDL
             {
                 StartInfo =
                 {
-                    FileName = "ffmpeg",
+                    FileName = config["ffmpeg_location"],
                     Arguments = $"-i - -f {filetype} pipe:1",
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    #if DEBUG
-                    WorkingDirectory = @".\..\..\..\"
-                    #else
-                    WorkingDirectory = @".\"
-                    #endif
                 },
                 EnableRaisingEvents = true
             })
@@ -136,9 +131,9 @@ namespace DiscordYoutubeDL
                 if (ffmpegException != null)
                 {
                     embed.WithColor(Color.Red)
-                    .WithThumbnailUrl("https://cdn.discordapp.com/attachments/588535514575929344/588566397819551744/274c.png")
-                    .WithTitle("**Error Transcoding Audio**")
-                    .WithDescription("This is likely caused by an invalid audio output format.\nFor more details see the traceback below.")
+                    .WithThumbnailUrl(config["icons:error_url"])
+                    .WithTitle(config["strings:ffmpeg_exception_title"])
+                    .WithDescription("strings:ffmpeg_exception_description")
                     .WithFields(
                         new EmbedFieldBuilder()
                         .WithName("*Stack Traceback:*")
@@ -163,8 +158,8 @@ namespace DiscordYoutubeDL
                 );
             else
             {
-                embed.WithTitle("Discord file size limit exceeded")
-                .WithDescription("Uploading to an alternate host...\nPlease allow time for this to finish.");
+                embed.WithTitle(config["strings:file_too_large_title"])
+                .WithDescription(config["strings:file_too_large_description"]);
                 await loadingMessage.ModifyAsync(msg => msg.Embed = embed.Build());
 
                 var newName = String.Join(
@@ -173,15 +168,29 @@ namespace DiscordYoutubeDL
                     StringSplitOptions.RemoveEmptyEntries) 
                     ).TrimEnd('.');
 
-                using (HttpClient client = new HttpClient { BaseAddress = new Uri("https://transfer.sh/") })
+                using (HttpClient client = new HttpClient { BaseAddress = new Uri(config["http_put_url"]) })
                 {
-                    var response = client.PutAsync($"{newName}.{filetype}", new StreamContent(encodedStream)).Result;
-                    if (response.IsSuccessStatusCode)
+                    var response = client.PutAsync($"{newName}.{filetype}", new StreamContent(encodedStream));
+                    /*
+                    DateTime lastUpdate = DateTime.Now;
+                    while (response.Status == TaskStatus.Running)
+                    {
+                        if (DateTime.Now.Subtract(lastUpdate).TotalSeconds > 3)
+                        {
+                            await loadingMessage.ModifyAsync(
+                                msg => msg.Content = $"Uploading to an alternate host...\nPlease allow time for this to finish.\n{}% uploaded..."
+                                );
+                            lastUpdate = DateTime.Now;
+                        }
+                    }
+                    */
+                    
+                    if (response.Result.IsSuccessStatusCode)
                     {
                         ytEmbed.AddField(
                             new EmbedFieldBuilder()
-                            .WithName("Download")
-                            .WithValue(await response.Content.ReadAsStringAsync())
+                            .WithName(config["strings:external_download_title"])
+                            .WithValue(String.Format(config["strings:external_download_description"], await response.Result.Content.ReadAsStringAsync()))
                         );
                         finishedMessage = await Context.Channel.SendMessageAsync(
                             embed: ytEmbed.Build()
@@ -191,9 +200,11 @@ namespace DiscordYoutubeDL
             }
 
             embed.WithColor(Color.Green)
-            .WithThumbnailUrl("https://cdn.discordapp.com/attachments/579654646629531650/588520160739196929/check.png")
-            .WithTitle("Done")
-            .WithDescription($"[Jump to message](https://discordapp.com/channels/{Context.Guild.Id}/{Context.Channel.Id}/{finishedMessage.Id})");
+            .WithThumbnailUrl(config["icons:success_url"])
+            .WithTitle(config["strings:finished_message_description"])
+            .WithDescription(
+                $"[{config["strings:finished_message_link"]}](https://discordapp.com/channels/{Context.Guild.Id}/{Context.Channel.Id}/{finishedMessage.Id})"
+                );
             
             await loadingMessage.ModifyAsync(msg => msg.Embed = embed.Build());
         }

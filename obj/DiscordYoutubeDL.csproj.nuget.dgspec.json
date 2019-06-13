@@ -47,11 +47,11 @@
             },
             "Microsoft.Extensions.Configuration": {
               "target": "Package",
-              "version": "[2.2.0, )"
+              "version": "[3.0.0-preview6.19304.6, )"
             },
-            "Microsoft.Extensions.Configuration.Json": {
+            "Microsoft.Extensions.Configuration.Xml": {
               "target": "Package",
-              "version": "[2.2.0, )"
+              "version": "[3.0.0-preview6.19304.6, )"
             },
             "Microsoft.NETCore.App": {
               "include": "None",

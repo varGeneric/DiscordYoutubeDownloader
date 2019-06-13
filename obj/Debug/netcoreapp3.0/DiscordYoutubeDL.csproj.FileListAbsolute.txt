@@ -13,7 +13,6 @@ c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Discord.Net.WebSo
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Configuration.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Configuration.Abstractions.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Configuration.FileExtensions.dll
-c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Configuration.Json.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Microsoft.Extensions.DependencyInjection.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Microsoft.Extensions.FileProviders.Abstractions.dll
@@ -40,3 +39,8 @@ c:\Users\User\Desktop\Dev\DiscordYT-DL\obj\Debug\netcoreapp3.0\DiscordYoutubeDL.
 C:\Users\User\Desktop\Dev\DiscordYT-DL\obj\Debug\netcoreapp3.0\DiscordYoutubeDL.csproj.CopyComplete
 c:\Users\User\Desktop\Dev\DiscordYT-DL\obj\Debug\netcoreapp3.0\DiscordYoutubeDL.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\obj\Debug\netcoreapp3.0\DiscordYoutubeDL.pdb
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Configuration.Xml.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\System.Security.Cryptography.Pkcs.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\System.Security.Cryptography.Xml.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\System.Security.Permissions.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\runtimes\win\lib\netcoreapp3.0\System.Security.Cryptography.Pkcs.dll

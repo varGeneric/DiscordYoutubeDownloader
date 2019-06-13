@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <api_token>API KEY HERE</api_token>
+    <bot_prefix>!ytdl </bot_prefix>
+    <ffmpeg_location>/usr/bin/ffmpeg</ffmpeg_location>
+    <http_put_url>https://transfer.sh/</http_put_url>
+    <icons>
+        <loading_url>https://cdn.discordapp.com/attachments/110373943822540800/235649976192073728/4AyCE.png</loading_url>
+        <error_url>https://cdn.discordapp.com/attachments/588535514575929344/588566397819551744/274c.png</error_url>
+        <success_url>https://cdn.discordapp.com/attachments/579654646629531650/588520160739196929/check.png</success_url>
+    </icons>
+    <strings>
+        <start_get_video>**Grabbing video, please wait...**</start_get_video>
+        <max_duration_exceeded_title>**Maximum video duration exceeded**</max_duration_exceeded_title>
+        <max_duration_exceeded_desc>For performance reasons, the bot will not process videos longer than an hour.</max_duration_exceeded_desc>
+        <ffmpeg_exception_title>**Error Transcoding Audio**</ffmpeg_exception_title>
+        <ffmpeg_exception_description>This is likely caused by an invalid audio output format.&#xA;For more details see the traceback below.</ffmpeg_exception_description>
+        <file_too_large_title>Discord file size limit exceeded</file_too_large_title>
+        <file_too_large_description>Uploading to an alternate host...&#xA;Please allow time for this to finish.</file_too_large_description>
+        <video_embed_title>{0}</video_embed_title>
+        <video_embed_author>{0}</video_embed_author>
+        <video_embed_author_thumb_url />
+        <video_embed_description>{0}</video_embed_description>
+        <video_embed_footer>Duration: {0} | Views: {1}</video_embed_footer>
+        <external_download_title>Download</external_download_title>
+        <external_download_description>{0}</external_download_description>
+        <finished_message_description>Done</finished_message_description>
+        <finished_message_link>Jump to message</finished_message_link>
+    </strings>
+</configuration>

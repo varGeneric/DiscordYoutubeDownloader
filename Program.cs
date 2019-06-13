@@ -4,6 +4,7 @@ using Discord.Commands;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Xml;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DiscordYoutubeDL
@@ -56,7 +57,7 @@ namespace DiscordYoutubeDL
 
             #if DEBUG
 	        if (_client.ConnectionState == ConnectionState.Connected && _client.LoginState == LoginState.LoggedIn)
-		        _client.SetGameAsync(msg.ToString(), "https://github.com/varGeneric/DiscordYT-DL/");
+		        _client.SetGameAsync(msg.ToString(), "https://github.com/varGeneric/DiscordYoutubeDownloader/");
             #endif
             return Task.CompletedTask;
         }
@@ -69,7 +70,7 @@ namespace DiscordYoutubeDL
             #else
                 .SetBasePath(AppContext.BaseDirectory)
             #endif
-                .AddJsonFile("_configuration.json");
+                .AddXmlFile("_configuration.xml");
             _config = builder.Build(); // Build the configuration
         }
 
