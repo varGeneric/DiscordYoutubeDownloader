@@ -32,7 +32,7 @@ namespace DiscordYoutubeDL
             .WithTitle("**Grabbing video, please wait...**")
             .WithColor(Color.Blue);
 
-            var loading_message = await Context.Channel.SendMessageAsync(embed: embed.Build());
+            var loadingMessage = await Context.Channel.SendMessageAsync(embed: embed.Build());
 
             Uri videoURI = new Uri(videoURL, UriKind.Absolute);
             var id = YoutubeClient.ParseVideoId(videoURI.ToString());
@@ -48,32 +48,49 @@ namespace DiscordYoutubeDL
                 .WithThumbnailUrl("https://cdn.discordapp.com/attachments/588535514575929344/588566397819551744/274c.png")
                 .WithTitle("**Maximum video duration exceeded**")
                 .WithDescription("For performance reasons, the bot will not process videos longer than an hour.");
-                await loading_message.ModifyAsync(msg => msg.Embed = embed.Build());
+                await loadingMessage.ModifyAsync(msg => msg.Embed = embed.Build());
                 return;
             }
 
             var ytStreamMetadataSet = await ytClient.GetVideoMediaStreamInfosAsync(id);
             var ytStreamMetadata = ytStreamMetadataSet.Audio.WithHighestBitrate();
-            var ytStream = await ytClient.GetMediaStreamAsync(ytStreamMetadata);
 
-            var ytEmbed = new EmbedBuilder()
-            .WithThumbnailUrl(ytMetadata.Thumbnails.HighResUrl)
-            .WithAuthor(Format.Sanitize(ytMetadata.Author))
-            .WithTitle(Format.Sanitize(ytMetadata.Title))
-            .WithDescription(
-                Format.Sanitize(ytMetadata.Description).Length <= 2048 ? 
-                Format.Sanitize(ytMetadata.Description) : $"{Format.Sanitize(ytMetadata.Description).Substring(0, 2045)}...")
-            .WithFields(
-                new EmbedFieldBuilder()
-                .WithName("👍")
-                .WithValue(ytMetadata.Statistics.LikeCount)
-                .WithIsInline(true),
-                new EmbedFieldBuilder()
-                .WithName("👎")
-                .WithValue(ytMetadata.Statistics.DislikeCount)
-                .WithIsInline(true)
-            )
-            .WithFooter($"Duration: {ytMetadata.Duration.ToString()} | Views: {ytMetadata.Statistics.ViewCount}");
+            var ytEmbed = new EmbedBuilder
+                {
+                    Title = Format.Sanitize(ytMetadata.Title),
+                    Author = new EmbedAuthorBuilder().WithName(Format.Sanitize(ytMetadata.Author)),
+                    ThumbnailUrl = ytMetadata.Thumbnails.HighResUrl,
+                    Footer = new EmbedFooterBuilder().WithText(
+                        $"Duration: {ytMetadata.Duration.ToString()} | Views: {ytMetadata.Statistics.ViewCount}"
+                        )
+                }
+                .WithFields(
+                    new EmbedFieldBuilder
+                    {
+                        Name = "Description",
+                        Value = Format.Sanitize(ytMetadata.Description).Length <= 2048 ? 
+                        Format.Sanitize(ytMetadata.Description) : $"{Format.Sanitize(ytMetadata.Description).Substring(0, 2045)}...",
+                        IsInline = false
+                    },
+                    new EmbedFieldBuilder()
+                    .WithName("👍")
+                    .WithValue(ytMetadata.Statistics.LikeCount)
+                    .WithIsInline(true),
+                    new EmbedFieldBuilder()
+                    .WithName("👎")
+                    .WithValue(ytMetadata.Statistics.DislikeCount)
+                    .WithIsInline(true)
+                );
+
+            try {
+                ytEmbed.Build();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            var ytStream = await ytClient.GetMediaStreamAsync(ytStreamMetadata);
 
             var encodedStream = new System.IO.MemoryStream();
 
@@ -128,7 +145,7 @@ namespace DiscordYoutubeDL
                         .WithValue(Format.Sanitize(ffmpegException.StackTrace))
                         .WithIsInline(false) 
                     );
-                    await loading_message.ModifyAsync(msg => msg.Embed = embed.Build());
+                    await loadingMessage.ModifyAsync(msg => msg.Embed = embed.Build());
                     return;
                 }
 
@@ -137,29 +154,48 @@ namespace DiscordYoutubeDL
                 var fileExt = MimeGuesser.GuessExtension(encodedStream);
             }
 
+            Discord.Rest.RestUserMessage finishedMessage = null;
+
             if (encodedStream.Length < 0x800000)
-                await Context.Channel.SendFileAsync(
+                finishedMessage = await Context.Channel.SendFileAsync(
                     encodedStream, $"{ytMetadata.Title}.{filetype}",
                     embed: ytEmbed.Build()
                 );
             else
             {
                 embed.WithTitle("Discord file size limit exceeded")
-                .WithDescription("Uploading to an alternate host.\nPlease wait a bit longer.");
-                await loading_message.ModifyAsync(msg => msg.Embed = embed.Build());
+                .WithDescription("Uploading to an alternate host...\nPlease allow time for this to finish.");
+                await loadingMessage.ModifyAsync(msg => msg.Embed = embed.Build());
+
+                var newName = String.Join(
+                    "_",
+                    ytMetadata.Title.Split(System.IO.Path.GetInvalidFileNameChars(),
+                    StringSplitOptions.RemoveEmptyEntries) 
+                    ).TrimEnd('.');
 
                 using (HttpClient client = new HttpClient { BaseAddress = new Uri("https://transfer.sh/") })
                 {
-                    var response = client.PutAsync(ytMetadata.Title.Replace(" ", ""), new StreamContent(encodedStream)).Result;
+                    var response = client.PutAsync($"{newName}.{filetype}", new StreamContent(encodedStream)).Result;
                     if (response.IsSuccessStatusCode)
-                        await ReplyAsync(await response.Content.ReadAsStringAsync());
+                    {
+                        ytEmbed.AddField(
+                            new EmbedFieldBuilder()
+                            .WithName("Download")
+                            .WithValue(await response.Content.ReadAsStringAsync())
+                        );
+                        finishedMessage = await Context.Channel.SendMessageAsync(
+                            embed: ytEmbed.Build()
+                            );
+                    }
                 }
             }
 
             embed.WithColor(Color.Green)
             .WithThumbnailUrl("https://cdn.discordapp.com/attachments/579654646629531650/588520160739196929/check.png")
-            .WithTitle("Done. Check latest message.");
-            await loading_message.ModifyAsync(msg => msg.Embed = embed.Build());
+            .WithTitle("Done")
+            .WithDescription($"[Jump to message](https://discordapp.com/channels/{Context.Guild.Id}/{Context.Channel.Id}/{finishedMessage.Id})");
+            
+            await loadingMessage.ModifyAsync(msg => msg.Embed = embed.Build());
         }
     }
 }

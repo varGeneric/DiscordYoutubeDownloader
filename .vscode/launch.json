@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/netcoreapp2.2/DiscordYoutubeDL.dll",
+            "program": "${workspaceFolder}/bin/Debug/netcoreapp3.0/DiscordYoutubeDL.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
