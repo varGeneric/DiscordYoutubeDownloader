@@ -21,6 +21,7 @@
             "type": "process",
             "args": [
                 "publish",
+                "-c", "Release",
                 "${workspaceFolder}/DiscordYoutubeDL.csproj"
             ],
             "problemMatcher": "$tsc"

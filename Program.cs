@@ -4,7 +4,6 @@ using Discord.Commands;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Xml;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DiscordYoutubeDL
@@ -17,6 +16,7 @@ namespace DiscordYoutubeDL
 
         static void Main(string[] args)
         {
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
             new Program().MainAsync().GetAwaiter().GetResult();
         }
 
@@ -27,7 +27,7 @@ namespace DiscordYoutubeDL
             string msg = "";
             foreach (System.Collections.Generic.KeyValuePair<string,string> i in _config.AsEnumerable())
                 msg += i.ToString();
-            Console.WriteLine(new LogMessage(LogSeverity.Debug, "Config Dump", msg));
+            await Log(new LogMessage(LogSeverity.Debug, "Config Dump", msg));
             #endif
 
             using (var services = ConfigureServices())
@@ -56,7 +56,7 @@ namespace DiscordYoutubeDL
             Console.WriteLine(msg.ToString());
 
             #if DEBUG
-	        if (_client.ConnectionState == ConnectionState.Connected && _client.LoginState == LoginState.LoggedIn)
+	        if (_client != null && _client.ConnectionState == ConnectionState.Connected && _client.LoginState == LoginState.LoggedIn)
 		        _client.SetGameAsync(msg.ToString(), "https://github.com/varGeneric/DiscordYoutubeDownloader/");
             #endif
             return Task.CompletedTask;
@@ -70,7 +70,7 @@ namespace DiscordYoutubeDL
             #else
                 .SetBasePath(AppContext.BaseDirectory)
             #endif
-                .AddXmlFile("_configuration.xml");
+                .AddXmlFile("_configuration.xml", optional: false, reloadOnChange: true);
             _config = builder.Build(); // Build the configuration
         }
 

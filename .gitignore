@@ -1,2 +1,4 @@
 _configuration.xml
 \bin
+\obj
+\.vscode

@@ -6,8 +6,6 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.1.1"/>
     <PackageReference Include="YoutubeExplode" Version="4.7.1"/>
-    <PackageReference Include="Mime" Version="3.0.2"/>
-    <PackageReference Include="xFFmpeg.NET" Version="3.3.3"/>
     <PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="3.0.0-preview6.19304.6"/>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0-preview6.19304.6"/>
   </ItemGroup>

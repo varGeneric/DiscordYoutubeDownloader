@@ -9,7 +9,8 @@ using Microsoft.Extensions.Configuration;
 using YoutubeExplode;
 using YoutubeExplode.Models.MediaStreams;
 
-using HeyRed.Mime;
+//using HeyRed.Mime;
+// Nuget package Mime to reenable
 
 namespace DiscordYoutubeDL
 {
@@ -146,7 +147,7 @@ namespace DiscordYoutubeDL
 
                 ffmpeg.WaitForExit();
 
-                var fileExt = MimeGuesser.GuessExtension(encodedStream);
+                //var fileExt = MimeGuesser.GuessExtension(encodedStream);
             }
 
             Discord.Rest.RestUserMessage finishedMessage = null;

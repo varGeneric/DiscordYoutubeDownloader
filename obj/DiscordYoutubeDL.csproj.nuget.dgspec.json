@@ -60,17 +60,9 @@
               "version": "[3.0.0-preview6-27804-01, )",
               "autoReferenced": true
             },
-            "Mime": {
-              "target": "Package",
-              "version": "[3.0.2, )"
-            },
             "YoutubeExplode": {
               "target": "Package",
               "version": "[4.7.1, )"
-            },
-            "xFFmpeg.NET": {
-              "target": "Package",
-              "version": "[3.3.3, )"
             }
           },
           "imports": [

@@ -260,64 +260,6 @@
           "ref/netstandard1.3/Microsoft.Win32.Primitives.dll": {}
         }
       },
-      "Mime/3.0.2": {
-        "type": "package",
-        "dependencies": {
-          "MimeTypesMap": "1.0.3",
-          "NETStandard.Library": "1.6.1"
-        },
-        "compile": {
-          "lib/netstandard1.3/Mime.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/Mime.dll": {}
-        },
-        "build": {
-          "build/Mime.targets": {}
-        },
-        "runtimeTargets": {
-          "runtimes/linux-x64/native/libmagic-1.so": {
-            "assetType": "native",
-            "rid": "linux-x64"
-          },
-          "runtimes/linux-x64/native/magic.mgc": {
-            "assetType": "native",
-            "rid": "linux-x64"
-          },
-          "runtimes/osx-x64/native/libmagic-1.dylib": {
-            "assetType": "native",
-            "rid": "osx-x64"
-          },
-          "runtimes/osx-x64/native/magic.mgc": {
-            "assetType": "native",
-            "rid": "osx-x64"
-          },
-          "runtimes/win-x64/native/libgnurx-0.dll": {
-            "assetType": "native",
-            "rid": "win-x64"
-          },
-          "runtimes/win-x64/native/libmagic-1.dll": {
-            "assetType": "native",
-            "rid": "win-x64"
-          },
-          "runtimes/win-x64/native/magic.mgc": {
-            "assetType": "native",
-            "rid": "win-x64"
-          }
-        }
-      },
-      "MimeTypesMap/1.0.3": {
-        "type": "package",
-        "dependencies": {
-          "NETStandard.Library": "1.6.1"
-        },
-        "compile": {
-          "lib/netstandard1.3/MimeTypesMap.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/MimeTypesMap.dll": {}
-        }
-      },
       "NETStandard.Library/1.6.1": {
         "type": "package",
         "dependencies": {
@@ -1671,15 +1613,6 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "xFFmpeg.NET/3.3.3": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/FFmpeg.NET.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/FFmpeg.NET.dll": {}
-        }
-      },
       "YoutubeExplode/4.7.1": {
         "type": "package",
         "dependencies": {
@@ -2020,42 +1953,6 @@
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._"
-      ]
-    },
-    "Mime/3.0.2": {
-      "sha512": "MPegnTCbWl2efK+SRWj5VplOVSlraP5oGRNqXDFfnZVUayEEJRdwEMfzPatO9aE1UTmYx8r3APQLav4hU7gxaw==",
-      "type": "package",
-      "path": "mime/3.0.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "build/Mime.targets",
-        "build/Platform.props",
-        "lib/net45/Mime.dll",
-        "lib/netstandard1.3/Mime.dll",
-        "mime.3.0.2.nupkg.sha512",
-        "mime.nuspec",
-        "runtimes/linux-x64/native/libmagic-1.so",
-        "runtimes/linux-x64/native/magic.mgc",
-        "runtimes/osx-x64/native/libmagic-1.dylib",
-        "runtimes/osx-x64/native/magic.mgc",
-        "runtimes/win-x64/native/libgnurx-0.dll",
-        "runtimes/win-x64/native/libmagic-1.dll",
-        "runtimes/win-x64/native/magic.mgc"
-      ]
-    },
-    "MimeTypesMap/1.0.3": {
-      "sha512": "YP1BGuPl+EMPf2++puxTXiDvrwsW38/ORGCm2u17YI3h8qejz2PyGrn4nWFpIz30dAbZkdAEjxD0N+5gMWNhbw==",
-      "type": "package",
-      "path": "mimetypesmap/1.0.3",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net40/MimeTypesMap.dll",
-        "lib/net45/MimeTypesMap.dll",
-        "lib/netstandard1.3/MimeTypesMap.dll",
-        "mimetypesmap.1.0.3.nupkg.sha512",
-        "mimetypesmap.nuspec"
       ]
     },
     "NETStandard.Library/1.6.1": {
@@ -5738,18 +5635,6 @@
         "system.xml.xdocument.nuspec"
       ]
     },
-    "xFFmpeg.NET/3.3.3": {
-      "sha512": "RZyLhkwv0Es0evh1gdNRaCfH3oNBOCF3U0aFuQrGIQ6uhTHfu1rKbN5FB/EaVsRMm06K0L+UHLJ6w+TRGn+Tew==",
-      "type": "package",
-      "path": "xffmpeg.net/3.3.3",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/netstandard2.0/FFmpeg.NET.dll",
-        "xffmpeg.net.3.3.3.nupkg.sha512",
-        "xffmpeg.net.nuspec"
-      ]
-    },
     "YoutubeExplode/4.7.1": {
       "sha512": "ojBy4UIkQEJMyCpZZGLCVc5oZ6+gMCnKqp+VNQbntlCJfxdZb8uwpg8sBWKkE1PS6Ek3m7avKoOLumfjZF1LhQ==",
       "type": "package",
@@ -5774,9 +5659,7 @@
       "Microsoft.Extensions.Configuration >= 3.0.0-preview6.19304.6",
       "Microsoft.Extensions.Configuration.Xml >= 3.0.0-preview6.19304.6",
       "Microsoft.NETCore.App >= 3.0.0-preview6-27804-01",
-      "Mime >= 3.0.2",
-      "YoutubeExplode >= 4.7.1",
-      "xFFmpeg.NET >= 3.3.3"
+      "YoutubeExplode >= 4.7.1"
     ]
   },
   "packageFolders": {
@@ -5839,17 +5722,9 @@
             "version": "[3.0.0-preview6-27804-01, )",
             "autoReferenced": true
           },
-          "Mime": {
-            "target": "Package",
-            "version": "[3.0.2, )"
-          },
           "YoutubeExplode": {
             "target": "Package",
             "version": "[4.7.1, )"
-          },
-          "xFFmpeg.NET": {
-            "target": "Package",
-            "version": "[3.3.3, )"
           }
         },
         "imports": [
