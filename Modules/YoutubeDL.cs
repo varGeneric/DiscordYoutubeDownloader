@@ -82,12 +82,12 @@ namespace DiscordYoutubeDL
                 }
                 .WithFields(
                     new EmbedFieldBuilder()
-                    .WithName("👍")
-                    .WithValue(ytMetadata.Statistics.LikeCount)
+                    .WithName(config["strings:video_embed_likes_title"])
+                    .WithValue(String.Format(config["strings:video_embed_likes_description"], ytMetadata.Statistics.LikeCount))
                     .WithIsInline(true),
                     new EmbedFieldBuilder()
-                    .WithName("👎")
-                    .WithValue(ytMetadata.Statistics.DislikeCount)
+                    .WithName(config["strings:video_embed_dislikes_title"])
+                    .WithValue(String.Format(config["strings:video_embed_dislikes_description"], ytMetadata.Statistics.DislikeCount))
                     .WithIsInline(true)
                 );
             ytEmbed.Build();
@@ -190,31 +190,33 @@ namespace DiscordYoutubeDL
 
                 using (HttpClient client = new HttpClient { BaseAddress = new Uri(config["http_put_url"]) })
                 {
-                    var response = client.PutAsync($"{newName}.{filetype}", new StreamContent(encodedStream));
-                    /*
-                    DateTime lastUpdate = DateTime.Now;
-                    while (response.Status == TaskStatus.Running)
+                    using (var response = client.PutAsync($"{newName}.{filetype}", new StreamContent(encodedStream)))
                     {
-                        if (DateTime.Now.Subtract(lastUpdate).TotalSeconds > 3)
+                        /*
+                        DateTime lastUpdate = DateTime.Now;
+                        while (response.Status == TaskStatus.Running)
                         {
-                            await loadingMessage.ModifyAsync(
-                                msg => msg.Content = $"Uploading to an alternate host...\nPlease allow time for this to finish.\n{}% uploaded..."
-                                );
-                            lastUpdate = DateTime.Now;
+                            if (DateTime.Now.Subtract(lastUpdate).TotalSeconds > 3)
+                            {
+                                await loadingMessage.ModifyAsync(
+                                    msg => msg.Content = $"Uploading to an alternate host...\nPlease allow time for this to finish.\n{}% uploaded..."
+                                    );
+                                lastUpdate = DateTime.Now;
+                            }
                         }
-                    }
-                    */
-                    
-                    if (response.Result.IsSuccessStatusCode)
-                    {
-                        ytEmbed.AddField(
-                            new EmbedFieldBuilder()
-                            .WithName(config["strings:external_download_title"])
-                            .WithValue(String.Format(config["strings:external_download_description"], await response.Result.Content.ReadAsStringAsync()))
-                        );
-                        finishedMessage = await Context.Channel.SendMessageAsync(
-                            embed: ytEmbed.Build()
+                        */
+                        
+                        if (response.Result.IsSuccessStatusCode)
+                        {
+                            ytEmbed.AddField(
+                                new EmbedFieldBuilder()
+                                .WithName(config["strings:external_download_title"])
+                                .WithValue(String.Format(config["strings:external_download_description"], await response.Result.Content.ReadAsStringAsync()))
                             );
+                            finishedMessage = await Context.Channel.SendMessageAsync(
+                                embed: ytEmbed.Build()
+                                );
+                        }
                     }
                 }
             }
@@ -230,6 +232,7 @@ namespace DiscordYoutubeDL
                 Console.WriteLine($"Successfully handled video id \"{ytMetadata.Id}\" in {DateTime.Now.Subtract(timerStart).Seconds} seconds.");
 
             await loadingMessage.ModifyAsync(msg => msg.Embed = embed.Build());
+            Task.WaitAll(ytStream.DisposeAsync().AsTask(), encodedStream.DisposeAsync().AsTask());
         }
     }
 }

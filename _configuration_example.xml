@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <api_token>API KEY HERE</api_token>
+    <debug>false</debug>
+    <api_token>API SECRET HERE</api_token>
     <bot_prefix>!ytdl </bot_prefix>
     <ffmpeg_location>/usr/bin/ffmpeg</ffmpeg_location>
     <http_put_url>https://transfer.sh/</http_put_url>
@@ -21,6 +22,10 @@
         <video_embed_author>{0}</video_embed_author>
         <video_embed_author_thumb_url />
         <video_embed_description>{0}</video_embed_description>
+        <video_embed_likes_title>👍</video_embed_likes_title>
+        <video_embed_likes_description>{0}</video_embed_likes_description>
+        <video_embed_dislikes_title>👎</video_embed_dislikes_title>
+        <video_embed_dislikes_description>{0}</video_embed_dislikes_description>
         <video_embed_footer>Duration: {0} | Views: {1}</video_embed_footer>
         <external_download_title>Download</external_download_title>
         <external_download_description>{0}</external_download_description>
