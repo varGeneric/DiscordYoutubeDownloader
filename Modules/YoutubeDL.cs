@@ -1,7 +1,9 @@
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +19,12 @@ namespace DiscordYoutubeDL
     public class YoutubeDL : ModuleBase<SocketCommandContext>
     {
         private IConfiguration config;
-        public YoutubeDL(IConfiguration configuration) => config = configuration;
+        private DiscordSocketClient client;
+        public YoutubeDL(IConfiguration configuration, DiscordSocketClient _client)
+        {
+            config = configuration; 
+            client = _client;
+        }
 
         [Command("download", RunMode = RunMode.Async)]
         [Summary("Downloads a YT video.")]
@@ -28,6 +35,7 @@ namespace DiscordYoutubeDL
         )]
         public async Task ytDownloadVid(string videoURL, string filetype = "mp3")
         {
+            DateTime timerStart = DateTime.Now;
             var embed = new EmbedBuilder()
             .WithThumbnailUrl(config["icons:loading_url"])
             .WithTitle(config["strings:start_get_video"])
@@ -82,18 +90,19 @@ namespace DiscordYoutubeDL
                     .WithValue(ytMetadata.Statistics.DislikeCount)
                     .WithIsInline(true)
                 );
+            ytEmbed.Build();
 
-            try {
-                ytEmbed.Build();
-            }
-            catch (Exception e)
+            var ytStreamTask = ytClient.GetMediaStreamAsync(ytStreamMetadata);
+            var ytStream = await ytStreamTask;
+            if (config.GetValue<bool>("debug", false))
             {
-                Console.WriteLine(e.ToString());
+                if (ytStreamTask.IsCompletedSuccessfully)
+                    Console.WriteLine($"Successfully got stream data for video id \"{ytMetadata.Id}\"");
+                else
+                    Console.WriteLine($"Failed to get stream data for video id \"{ytMetadata.Id}\"");
             }
 
-            var ytStream = await ytClient.GetMediaStreamAsync(ytStreamMetadata);
-
-            var encodedStream = new System.IO.MemoryStream();
+            var encodedStream = new MemoryStream();
 
             using (Process ffmpeg = new Process
             {
@@ -110,10 +119,13 @@ namespace DiscordYoutubeDL
                 EnableRaisingEvents = true
             })
             {
-                ffmpeg.ErrorDataReceived += (sender, eventArgs) => Console.WriteLine(eventArgs.Data);
+                Exception ffmpegException = null;
+                
+                if (config.GetValue<bool>("debug", false))
+                    ffmpeg.ErrorDataReceived += (sender, eventArgs) => Console.WriteLine(eventArgs.Data);
+                
                 ffmpeg.Start();
                 ffmpeg.BeginErrorReadLine();
-                Exception ffmpegException = null;
                 var inputTask = Task.Run(() => 
                 {
                     try
@@ -121,7 +133,7 @@ namespace DiscordYoutubeDL
                         ytStream.CopyTo(ffmpeg.StandardInput.BaseStream);
                         ffmpeg.StandardInput.Close();
                     }
-                    catch (System.IO.IOException e)
+                    catch (IOException e)
                     {
                         ffmpegException = e;
                     }
@@ -134,7 +146,7 @@ namespace DiscordYoutubeDL
                     embed.WithColor(Color.Red)
                     .WithThumbnailUrl(config["icons:error_url"])
                     .WithTitle(config["strings:ffmpeg_exception_title"])
-                    .WithDescription("strings:ffmpeg_exception_description")
+                    .WithDescription(config["strings:ffmpeg_exception_description"])
                     .WithFields(
                         new EmbedFieldBuilder()
                         .WithName("*Stack Traceback:*")
@@ -153,19 +165,26 @@ namespace DiscordYoutubeDL
             Discord.Rest.RestUserMessage finishedMessage = null;
 
             if (encodedStream.Length < 0x800000)
+            {
+                if (config.GetValue<bool>("debug", false))
+                    Console.WriteLine("Uploading transcoded file to Discord.");
+                encodedStream.Position = 0;
                 finishedMessage = await Context.Channel.SendFileAsync(
                     encodedStream, $"{ytMetadata.Title}.{filetype}",
                     embed: ytEmbed.Build()
                 );
+            }
             else
             {
+                if (config.GetValue<bool>("debug", false))
+                    Console.WriteLine("Uploading transcoded file to alternate host.");
                 embed.WithTitle(config["strings:file_too_large_title"])
                 .WithDescription(config["strings:file_too_large_description"]);
                 await loadingMessage.ModifyAsync(msg => msg.Embed = embed.Build());
 
                 var newName = String.Join(
                     "_",
-                    ytMetadata.Title.Split(System.IO.Path.GetInvalidFileNameChars(),
+                    ytMetadata.Title.Split(Path.GetInvalidFileNameChars(),
                     StringSplitOptions.RemoveEmptyEntries) 
                     ).TrimEnd('.');
 
@@ -207,6 +226,9 @@ namespace DiscordYoutubeDL
                 $"[{config["strings:finished_message_link"]}](https://discordapp.com/channels/{Context.Guild.Id}/{Context.Channel.Id}/{finishedMessage.Id})"
                 );
             
+            if (config.GetValue<bool>("debug", false))
+                Console.WriteLine($"Successfully handled video id \"{ytMetadata.Id}\" in {DateTime.Now.Subtract(timerStart).Seconds} seconds.");
+
             await loadingMessage.ModifyAsync(msg => msg.Embed = embed.Build());
         }
     }

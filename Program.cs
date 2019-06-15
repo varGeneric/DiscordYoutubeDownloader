@@ -22,13 +22,14 @@ namespace DiscordYoutubeDL
 
         public async Task MainAsync()
 		{
-            #if DEBUG
-            Console.WriteLine("Hello World!");
-            string msg = "";
-            foreach (System.Collections.Generic.KeyValuePair<string,string> i in _config.AsEnumerable())
-                msg += i.ToString();
-            await Log(new LogMessage(LogSeverity.Debug, "Config Dump", msg));
-            #endif
+            if (_config.GetValue<bool>("debug", false))
+            {
+                Console.WriteLine("Hello World!");
+                string msg = "";
+                foreach (System.Collections.Generic.KeyValuePair<string,string> i in _config.AsEnumerable())
+                    msg += i.ToString();
+                await Log(new LogMessage(LogSeverity.Debug, "Config Dump", msg));
+            }
 
             using (var services = ConfigureServices())
             {
@@ -51,14 +52,14 @@ namespace DiscordYoutubeDL
                 await Task.Delay(-1);
             }
         }
+
         private Task Log(LogMessage msg)
         {
             Console.WriteLine(msg.ToString());
 
-            #if DEBUG
-	        if (_client != null && _client.ConnectionState == ConnectionState.Connected && _client.LoginState == LoginState.LoggedIn)
+	        if (_client != null && _client.ConnectionState == ConnectionState.Connected && _client.LoginState == LoginState.LoggedIn &&
+            _config.GetValue<bool>("debug", false))
 		        _client.SetGameAsync(msg.ToString(), "https://github.com/varGeneric/DiscordYoutubeDownloader/");
-            #endif
             return Task.CompletedTask;
         }
 
@@ -73,7 +74,7 @@ namespace DiscordYoutubeDL
                 .AddXmlFile("_configuration.xml", optional: false, reloadOnChange: true);
             _config = builder.Build(); // Build the configuration
         }
-
+        
         private ServiceProvider ConfigureServices()
         {
             return new ServiceCollection()
