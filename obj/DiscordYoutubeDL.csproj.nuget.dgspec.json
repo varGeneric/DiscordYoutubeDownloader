@@ -14,11 +14,13 @@
         "outputPath": "C:\\Users\\User\\Desktop\\Dev\\DiscordYT-DL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.0"
@@ -47,26 +49,26 @@
             },
             "Microsoft.Extensions.Configuration": {
               "target": "Package",
-              "version": "[3.0.0-preview6.19304.6, )"
+              "version": "[3.0.0-preview7.19362.4, )"
             },
             "Microsoft.Extensions.Configuration.Binder": {
               "target": "Package",
-              "version": "[3.0.0-preview6.19304.6, )"
+              "version": "[3.0.0-preview7.19362.4, )"
             },
             "Microsoft.Extensions.Configuration.Xml": {
               "target": "Package",
-              "version": "[3.0.0-preview6.19304.6, )"
+              "version": "[3.0.0-preview7.19362.4, )"
             },
             "Microsoft.NETCore.App": {
               "include": "None",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[3.0.0-preview6-27804-01, )",
+              "version": "[3.0.0-preview7-27912-14, )",
               "autoReferenced": true
             },
             "YoutubeExplode": {
               "target": "Package",
-              "version": "[4.7.2, )"
+              "version": "[4.7.7, )"
             }
           },
           "imports": [
@@ -82,23 +84,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
-              "version": "[3.0.0-preview6.19307.2, 3.0.0-preview6.19307.2]"
+              "version": "[3.0.0-preview7.19365.7, 3.0.0-preview7.19365.7]"
             },
             {
               "name": "Microsoft.NETCore.App.Host.linux-x64",
-              "version": "[3.0.0-preview6-27804-01, 3.0.0-preview6-27804-01]"
+              "version": "[3.0.0-preview7-27912-14, 3.0.0-preview7-27912-14]"
             },
             {
-              "name": "runtime.linux-x64.Microsoft.NETCore.App",
-              "version": "[3.0.0-preview6-27804-01, 3.0.0-preview6-27804-01]"
-            },
-            {
-              "name": "runtime.linux-x64.Microsoft.NETCore.DotNetHostPolicy",
-              "version": "[3.0.0-preview6-27804-01, 3.0.0-preview6-27804-01]"
-            },
-            {
-              "name": "runtime.linux-x64.Microsoft.NETCore.DotNetHostResolver",
-              "version": "[3.0.0-preview6-27804-01, 3.0.0-preview6-27804-01]"
+              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
+              "version": "[3.0.0-preview7-27912-14, 3.0.0-preview7-27912-14]"
             }
           ],
           "frameworkReferences": {

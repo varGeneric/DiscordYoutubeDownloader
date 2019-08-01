@@ -64,34 +64,6 @@ namespace DiscordYoutubeDL
             var ytStreamMetadataSet = await ytClient.GetVideoMediaStreamInfosAsync(id);
             var ytStreamMetadata = ytStreamMetadataSet.Audio.WithHighestBitrate();
 
-            var ytEmbed = new EmbedBuilder
-                {
-                    Title = String.Format(config["strings:video_embed_title"], Format.Sanitize(ytMetadata.Title)),
-                    Author = new EmbedAuthorBuilder
-                    {
-                        Name = String.Format(config["strings:video_embed_author"], Format.Sanitize(ytMetadata.Author)),
-                        IconUrl = config["strings:video_embed_author_thumb_url"]
-                    },
-                    ThumbnailUrl = ytMetadata.Thumbnails.HighResUrl,
-                    Description = String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)).Length <= 2048 ? 
-                                  String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)) :
-                                  $"{String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)).Substring(0, 2045)}...",
-                    Footer = new EmbedFooterBuilder().WithText(
-                        String.Format(config["strings:video_embed_footer"], ytMetadata.Duration.ToString(), ytMetadata.Statistics.ViewCount)
-                        )
-                }
-                .WithFields(
-                    new EmbedFieldBuilder()
-                    .WithName(config["strings:video_embed_likes_title"])
-                    .WithValue(String.Format(config["strings:video_embed_likes_description"], ytMetadata.Statistics.LikeCount))
-                    .WithIsInline(true),
-                    new EmbedFieldBuilder()
-                    .WithName(config["strings:video_embed_dislikes_title"])
-                    .WithValue(String.Format(config["strings:video_embed_dislikes_description"], ytMetadata.Statistics.DislikeCount))
-                    .WithIsInline(true)
-                );
-            ytEmbed.Build();
-
             var ytStreamTask = ytClient.GetMediaStreamAsync(ytStreamMetadata);
             var ytStream = await ytStreamTask;
             if (config.GetValue<bool>("debug", false))
@@ -171,7 +143,7 @@ namespace DiscordYoutubeDL
                 encodedStream.Position = 0;
                 finishedMessage = await Context.Channel.SendFileAsync(
                     encodedStream, $"{ytMetadata.Title}.{filetype}",
-                    embed: ytEmbed.Build()
+                    embed: buildYtEmbed(ytMetadata)
                 );
             }
             else
@@ -208,13 +180,13 @@ namespace DiscordYoutubeDL
                         
                         if (response.Result.IsSuccessStatusCode)
                         {
-                            ytEmbed.AddField(
-                                new EmbedFieldBuilder()
-                                .WithName(config["strings:external_download_title"])
-                                .WithValue(String.Format(config["strings:external_download_description"], await response.Result.Content.ReadAsStringAsync()))
-                            );
                             finishedMessage = await Context.Channel.SendMessageAsync(
-                                embed: ytEmbed.Build()
+                                embed: buildYtEmbed(
+                                    ytMetadata,
+                                    new EmbedFieldBuilder()
+                                    .WithName(config["strings:external_download_title"])
+                                    .WithValue(String.Format(config["strings:external_download_description"], await response.Result.Content.ReadAsStringAsync()))
+                                    )
                                 );
                         }
                     }
@@ -233,6 +205,84 @@ namespace DiscordYoutubeDL
 
             await loadingMessage.ModifyAsync(msg => msg.Embed = embed.Build());
             Task.WaitAll(ytStream.DisposeAsync().AsTask(), encodedStream.DisposeAsync().AsTask());
+        }
+
+/*
+        [Command("dlsubs", RunMode = RunMode.Async)]
+        [Summary("Downloads a YT video.")]
+        [Alias("subs", "subtitles", "srt")]
+        [RequireBotPermission(
+            GuildPermission.AttachFiles &
+            GuildPermission.SendMessages
+        )]
+        public async Task ytDownloadSubtitles(string videoURL, )
+        {
+            ;
+        }
+*/
+
+        private Embed buildYtEmbed(YoutubeExplode.Models.Video ytMetadata /*, EmbedFieldBuilder additionalField = null*/) // Additional field unused and buggy
+        {
+            var ytEmbed = new EmbedBuilder
+            {
+                Title = String.Format(config["strings:video_embed_title"], Format.Sanitize(ytMetadata.Title)),
+                Author = new EmbedAuthorBuilder
+                {
+                    Name = String.Format(config["strings:video_embed_author"], Format.Sanitize(ytMetadata.Author)),
+                    IconUrl = config["strings:video_embed_author_thumb_url"]
+                },
+                ThumbnailUrl = ytMetadata.Thumbnails.HighResUrl,
+                Description = String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)).Length <= 2048 ? 
+                                String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)) :
+                                $"{String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)).Substring(0, 2045)}...",
+                Footer = new EmbedFooterBuilder().WithText(
+                    String.Format(config["strings:video_embed_footer"], ytMetadata.Duration.ToString(), ytMetadata.Statistics.ViewCount)
+                    )
+            }
+            .WithFields(
+                new EmbedFieldBuilder()
+                .WithName(config["strings:video_embed_likes_title"])
+                .WithValue(String.Format(config["strings:video_embed_likes_description"], ytMetadata.Statistics.LikeCount))
+                .WithIsInline(true),
+                new EmbedFieldBuilder()
+                .WithName(config["strings:video_embed_dislikes_title"])
+                .WithValue(String.Format(config["strings:video_embed_dislikes_description"], ytMetadata.Statistics.DislikeCount))
+                .WithIsInline(true)
+            );
+            return ytEmbed.Build();
+        }
+
+        // GIANT HACK: This overload is very redundant, needed a quick bugfix...
+        private Embed buildYtEmbed(YoutubeExplode.Models.Video ytMetadata, EmbedFieldBuilder additionalField)
+        {
+            var ytEmbed = new EmbedBuilder
+            {
+                Title = String.Format(config["strings:video_embed_title"], Format.Sanitize(ytMetadata.Title)),
+                Author = new EmbedAuthorBuilder
+                {
+                    Name = String.Format(config["strings:video_embed_author"], Format.Sanitize(ytMetadata.Author)),
+                    IconUrl = config["strings:video_embed_author_thumb_url"]
+                },
+                ThumbnailUrl = ytMetadata.Thumbnails.HighResUrl,
+                Description = String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)).Length <= 2048 ? 
+                                String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)) :
+                                $"{String.Format(config["strings:video_embed_description"], Format.Sanitize(ytMetadata.Description)).Substring(0, 2045)}...",
+                Footer = new EmbedFooterBuilder().WithText(
+                    String.Format(config["strings:video_embed_footer"], ytMetadata.Duration.ToString(), ytMetadata.Statistics.ViewCount)
+                    )
+            }
+            .WithFields(
+                new EmbedFieldBuilder()
+                .WithName(config["strings:video_embed_likes_title"])
+                .WithValue(String.Format(config["strings:video_embed_likes_description"], ytMetadata.Statistics.LikeCount))
+                .WithIsInline(true),
+                new EmbedFieldBuilder()
+                .WithName(config["strings:video_embed_dislikes_title"])
+                .WithValue(String.Format(config["strings:video_embed_dislikes_description"], ytMetadata.Statistics.DislikeCount))
+                .WithIsInline(true),
+                additionalField
+            );
+            return ytEmbed.Build();
         }
     }
 }

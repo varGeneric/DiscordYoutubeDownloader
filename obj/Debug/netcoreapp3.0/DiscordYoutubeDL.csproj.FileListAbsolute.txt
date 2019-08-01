@@ -4,7 +4,6 @@ C:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\DiscordYoutubeDL.
 C:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\DiscordYoutubeDL.runtimeconfig.dev.json
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\DiscordYoutubeDL.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\DiscordYoutubeDL.pdb
-c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\AngleSharp.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Discord.Net.Commands.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Discord.Net.Core.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Discord.Net.Rest.dll
@@ -34,3 +33,6 @@ c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\System.Security.C
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\System.Security.Cryptography.Xml.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\System.Security.Permissions.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\runtimes\win\lib\netcoreapp3.0\System.Security.Cryptography.Pkcs.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\LtGt.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Configuration.Binder.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Sprache.dll
