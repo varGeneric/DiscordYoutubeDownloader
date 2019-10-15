@@ -25,10 +25,10 @@ namespace DiscordYoutubeDL
             if (_config.GetValue<bool>("debug", false))
             {
                 Console.WriteLine("Hello World!");
-                string msg = "";
+                string configStr = "";
                 foreach (System.Collections.Generic.KeyValuePair<string,string> i in _config.AsEnumerable())
-                    msg += i.ToString();
-                await Log(new LogMessage(LogSeverity.Debug, "Config Dump", msg));
+                    configStr += i.ToString();
+                await Log(new LogMessage(LogSeverity.Debug, "Config Dump", configStr));
             }
 
             using (var services = ConfigureServices())
@@ -43,7 +43,6 @@ namespace DiscordYoutubeDL
                 await client.LoginAsync(TokenType.Bot, _config["api_token"]);
                 // Set bot status
                 await client.SetStatusAsync(UserStatus.Online);
-                // await _client.SetGameAsync("");
                 await client.StartAsync();
 
                 await services.GetRequiredService<CommandHandler>().InitializeAsync();
@@ -57,8 +56,7 @@ namespace DiscordYoutubeDL
         {
             Console.WriteLine(msg.ToString());
 
-	        if (_client != null && _client.ConnectionState == ConnectionState.Connected && _client.LoginState == LoginState.LoggedIn &&
-            _config.GetValue<bool>("debug", false))
+	        if (_config.GetValue<bool>("debug", false) &&_client != null && _client.ConnectionState == ConnectionState.Connected && _client.LoginState == LoginState.LoggedIn)
 		        _client.SetGameAsync(msg.ToString(), "https://github.com/varGeneric/DiscordYoutubeDownloader/");
             return Task.CompletedTask;
         }
