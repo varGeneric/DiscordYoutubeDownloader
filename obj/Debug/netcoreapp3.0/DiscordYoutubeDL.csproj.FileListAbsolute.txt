@@ -22,7 +22,6 @@ c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Newtonsoft.Json.d
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\System.Interactive.Async.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\YoutubeExplode.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\obj\Debug\netcoreapp3.0\DiscordYoutubeDL.csprojAssemblyReference.cache
-c:\Users\User\Desktop\Dev\DiscordYT-DL\obj\Debug\netcoreapp3.0\DiscordYoutubeDL.csproj.CoreCompileInputs.cache
 c:\Users\User\Desktop\Dev\DiscordYT-DL\obj\Debug\netcoreapp3.0\DiscordYoutubeDL.AssemblyInfoInputs.cache
 c:\Users\User\Desktop\Dev\DiscordYT-DL\obj\Debug\netcoreapp3.0\DiscordYoutubeDL.AssemblyInfo.cs
 C:\Users\User\Desktop\Dev\DiscordYT-DL\obj\Debug\netcoreapp3.0\DiscordYoutubeDL.csproj.CopyComplete
@@ -36,3 +35,10 @@ c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\runtimes\win\lib\
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\LtGt.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Microsoft.Extensions.Configuration.Binder.dll
 c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Sprache.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\System.Drawing.Common.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\System.Windows.Extensions.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+c:\Users\User\Desktop\Dev\DiscordYT-DL\bin\Debug\netcoreapp3.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
